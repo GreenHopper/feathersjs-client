@@ -2,6 +2,21 @@
   "name": "feathersjs-client",
   "description": "A web component wrapper around the feathersjs-client library.",
   "main": "feathersjs-client.html",
+  "authors": [
+    "Green Hopper <office@greenhopper.at>"
+  ],
+  "keywords": [
+    "polymer",
+    "web-components",
+    "feathersjs",
+    "feathersjs-client"
+  ],
+  "licenses": [
+    {
+      "type": "Apache-2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0"
+    }
+  ],
   "dependencies": {
     "polymer": "Polymer/polymer#^1.7.0",
     "feathers-client": "^1.9.0",
