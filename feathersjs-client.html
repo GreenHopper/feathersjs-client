@@ -1,12 +1,83 @@
 <link rel="import" href="../polymer/polymer.html">
-
 <!--
 `feathersjs-client`
 A web component wrapper around the feathersjs-client library.
 
 @demo demo/index.html 
 -->
-
 <dom-module id="feathersjs-client">
+  <script type="text/javascript" src="../socket.io-client/dist/socket.io.min.js"></script>
   <script type="text/javascript" src="../feathers-client/dist/feathers.min.js"></script>
+  <script>
+  Polymer({
+
+    is: 'feathersjs-client',
+
+    properties: {
+      /**
+       * The URL to the feathersjs-server that offers a web socket connection.
+       * When the content of this value is changed, the feathersjs connection is (re)established.
+       * @type String
+       */
+      server: {
+        type: String,
+        observer: '_handleUrlChange'
+      },
+      /**
+       * The feathersjs app object, which gives access to all provided services. 
+       * It will automatically be created when a server url is provided.
+       * @type Object
+       */
+      app: {
+        type: Object,
+        readOnly: true
+      },
+      /**
+       * The socket.io client object.
+       * @type Object
+       */
+      _socket: {
+        type: Object
+      }
+    },
+    _handleUrlChange: function(server) {
+      this._disconnect();
+      if (this.server) {
+        this._connectToUrl(server);
+      }
+    },
+    /**
+     * Fired when a connection to the feathersjs server is established.
+     *
+     * @event feathersjs-connected
+     */
+    /**
+     * Fired when the socket.io connection has been lost to the feathersjs server.
+     *
+     * @event feathersjs-disconnected
+     */
+    _connectToUrl: function(url) {
+      this._socket = io(url);
+      this.app = feathers()
+        .configure(feathers.hooks())
+        .configure(feathers.socketio(this._socket));
+      this._socket.on('connect', function() {
+        console.log('feathersjs-client connected to ' + this.server);
+        this.fire('feathersjs-connected');
+      }.bind(this));
+      this._socket.on('disconnect', function() {
+        console.log('feathersjs-client disconnected from ' + this.server);
+        this.fire('feathersjs-disconnected');
+      }.bind(this));
+    },
+    _disconnect: function() {
+      if (this._socket) {
+        this._socket.disconnect();
+      }
+      this._socket = null;
+      this.app = null;
+    }
+
+  });
+  </script>
 </dom-module>
