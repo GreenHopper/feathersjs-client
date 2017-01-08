@@ -1,28 +1,44 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
-    <title>feathersjs-client demo</title>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+  <title>feathersjs-client demo</title>
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+  <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+  <link rel="import" href="../../paper-input/paper-input.html">
+  <link rel="import" href="../../iron-flex-layout/iron-flex-layout-classes.html">
+  <link rel="import" href="../../iron-icons/iron-icons.html">
+  <link rel="import" href="../feathersjs-client.html">
+  <style is="custom-style" include="demo-pages-shared-styles iron-flex iron-flex-alignment">
+  .container {
+    @apply(--layout-horizontal);
+    @apply(--layout-wrap);
+    @apply(--layout-center-center);
+  }
+  
+  iron-icon {
+    color: green;
+  }
+  </style>
+</head>
 
-    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+<body>
+  <div class="vertical-section-container centered">
+    <h3>Basic feathersjs-client demo</h3>
+    <demo-snippet>
+      <template is="dom-bind">
+        <div class="container">
+          <feathersjs-client server="{{url}}" connected="{{isConnected}}"></feathersjs-client>
+          <paper-input value="{{url}}" label="Server URL"></paper-input>
+          <iron-icon icon="cloud-done" hidden$="{{!isConnected}}"></iron-icon>
+          <iron-icon icon="cloud-off" hidden$="[[isConnected]]"></iron-icon>
+        </div>
+      </template>
+    </demo-snippet>
+  </div>
+</body>
 
-    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
-    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
-    <link rel="import" href="../feathersjs-client.html">
-
-    <style is="custom-style" include="demo-pages-shared-styles">
-    </style>
-  </head>
-  <body>
-    <div class="vertical-section-container centered">
-      <h3>Basic feathersjs-client demo</h3>
-      <demo-snippet>
-        <template>
-          <feathersjs-client server="http://localhost:3030"></feathersjs-client>
-        </template>
-      </demo-snippet>
-    </div>
-  </body>
 </html>

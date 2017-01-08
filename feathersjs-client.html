@@ -31,6 +31,16 @@ A web component wrapper around the feathersjs-client library.
       app: {
         type: Object,
         observer: '_appChanged',
+        readOnly: true,
+        notify: true
+      },
+      /**
+       * The feathersjs connection state. 
+       * @type Boolean
+       */
+      connected: {
+        type: Boolean,
+        readOnly: true,
         notify: true
       },
       /**
@@ -41,21 +51,7 @@ A web component wrapper around the feathersjs-client library.
         type: Object
       }
     },
-    _appChanged: function() {
-      if (this.app) {
-        console.log('feathersjs-client connected to ' + this.server);
-        this.fire('feathersjs-connected', this.app);
-      } else {
-        console.log('feathersjs-client disconnected from ' + this.server);
-        this.fire('feathersjs-disconnected');
-      }
-    },
-    _handleUrlChange: function(server) {
-      this._disconnect();
-      if (this.server) {
-        this._connectToUrl(server);
-      }
-    },
+    // Event description
     /**
      * Fired when a connection to the feathersjs server is established.
      *
@@ -67,18 +63,69 @@ A web component wrapper around the feathersjs-client library.
      *
      * @event feathersjs-disconnected
      */
+    /**
+     * Observer method that is called when the app object was changed.
+     * Responsible for firing the correct event.
+     */
+    _appChanged: function() {
+      if (this.app) {
+        if (!this._socket || !this._socket.connected) {
+          this._disconnect();
+          return;
+        }
+        console.log('feathersjs-client connected to ' + this.server);
+        this._setConnected(true);
+        this.fire('feathersjs-connected', this.app);
+      } else {
+        console.log('feathersjs-client disconnected from ' + this.server);
+        this.fire('feathersjs-disconnected');
+      }
+    },
+    /**
+     * Observer method that is called when the server url was changed.
+     * Responsible for disconnecting the old connection and connecting to the new url.
+     */
+    _handleUrlChange: function(server) {
+      this._disconnect();
+      if (this.server) {
+        this._connectToUrl(server);
+      }
+    },
+    /**
+     * Private method that establishes the socket connection.
+     */
     _connectToUrl: function(url) {
-      this._socket = io(url);
-      this.set('app', feathers()
+      if (!url || url.trim().length === 0) {
+        return;
+      }
+      this._socket = io(url.trim());
+      this._socket.on('connect', function() {
+        this._onConnected();
+      }.bind(this));
+      this._socket.on('disconnect', function() {
+        this._disconnect();
+      }.bind(this));
+    },
+    /**
+     * Private method that is called once the socket conneciton is established.
+     * Responsible for creating the feathers.js application object.
+     */
+    _onConnected: function() {
+      this._setApp(feathers()
         .configure(feathers.hooks())
         .configure(feathers.socketio(this._socket)));
     },
+    /**
+     * Private method that disconnects from the feathers.js server and resets all related properties.
+     */
     _disconnect: function() {
       if (this._socket) {
+        // Disconnect the web socket
         this._socket.disconnect();
       }
       this._socket = null;
-      this.app = null;
+      this._setApp(null);
+      this._setConnected(false);
     }
 
   });
