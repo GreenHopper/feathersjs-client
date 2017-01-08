@@ -1,7 +1,7 @@
 [![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://beta.webcomponents.org/element/owner/my-element)
 # \<feathersjs-client\>
 
-A web component wrapper around the feathersjs-client library that also takes care of establishing a server connection. If you are not familiar with feathers.js please check out their awesome website [http://feathersjs.com/].
+A web component wrapper around the feathersjs-client library that also takes care of establishing a server connection. If you are not familiar with feathers.js please check out their awesome website http://feathersjs.com/.
 
 A typical use case looks like this:
 ```html
