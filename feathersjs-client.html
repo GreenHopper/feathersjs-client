@@ -30,7 +30,8 @@ A web component wrapper around the feathersjs-client library.
        */
       app: {
         type: Object,
-        observer: '_appChanged'
+        observer: '_appChanged',
+        notify: true
       },
       /**
        * The socket.io client object.
@@ -43,7 +44,7 @@ A web component wrapper around the feathersjs-client library.
     _appChanged: function() {
       if (this.app) {
         console.log('feathersjs-client connected to ' + this.server);
-        this.fire('feathersjs-connected');
+        this.fire('feathersjs-connected', this.app);
       } else {
         console.log('feathersjs-client disconnected from ' + this.server);
         this.fire('feathersjs-disconnected');
@@ -59,6 +60,7 @@ A web component wrapper around the feathersjs-client library.
      * Fired when a connection to the feathersjs server is established.
      *
      * @event feathersjs-connected
+     * @param The new feathersjs app object, which can be used to access all offered services
      */
     /**
      * Fired when the socket.io connection has been lost to the feathersjs server.
