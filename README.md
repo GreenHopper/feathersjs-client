@@ -14,4 +14,10 @@ The `app` property then can be used to access a feather.js service:
 
 ```javascript
 var service = app.service('todos');
+service.on('created', todo => console.log('Created a todo', todo));
+
+// Use the service from the server
+service.create({
+  text: 'Create a new app'
+});
 ```
