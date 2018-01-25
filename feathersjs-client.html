@@ -122,7 +122,6 @@ The `app` property then can be used to access a feather.js service:
      */
     _onConnected: function() {
       this._setApp(feathers()
-        .configure(feathers.hooks())
         .configure(feathers.socketio(this._socket)));
     },
     /**
